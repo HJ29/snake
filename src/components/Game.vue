@@ -1,0 +1,174 @@
+<template>
+  <div>
+    <div style="width: 200px;">
+      <button 
+        @click="start">
+        start
+      </button>
+      <button 
+        @click="end">
+        end
+      </button>
+      <div>
+        {{`frequency: ${frequency}`}}
+      </div>
+      <div>
+        {{`time: ${time}`}}
+      </div>
+      <div>
+        {{`score: ${positions.length - 1}`}}
+      </div>
+    </div>
+    <div class="container">
+      <snake
+        :positions="positions"/>
+      <food
+        :position="foodPosition"/>
+    </div>
+  </div>
+</template>
+
+<script>
+function clone(obj) {
+  return JSON.parse(JSON.stringify(obj))
+}
+function random(num) {
+  return Math.floor(Math.random() * Math.floor(num))
+}
+const directions = {
+  left: {
+    name: 'left',
+    position: [-1,0]
+  },
+  right: {
+    name: 'right',
+    position: [1,0]
+  },
+  up: {
+    name: 'up',
+    position: [0,-1]
+  },
+  down: {
+    name: 'down',
+    position: [0,1]
+  }
+}
+export default {
+  components: {
+    Snake: () => import('./Snake.vue'),
+    Food: () => import('./Food.vue')
+  },
+  data() {
+    return {
+      gameTimer: null,
+      timer: null,
+      time: 0,
+      positions: [[2,2], [3,2], [4,2]],
+      direction: directions.right,
+      foodPosition: null,
+      container: {
+        width: 30,
+        height: 30,
+      },
+      frequency: 200,
+    }
+  },
+  mounted() {
+    window.addEventListener("keydown", e => {
+      if(this.time > 0) {
+        this.keyPress(e.keyCode)
+      }
+    });
+  },
+  methods: {
+    keyPress(code) {
+      switch(code) {
+        case 37:  // left
+          this.changeDirection(directions.left);
+          break;
+        case 39:  // right
+          this.changeDirection(directions.right);
+          break;
+        case 38:  // up
+          this.changeDirection(directions.up);
+          break;
+        case 40:  // down
+          this.changeDirection(directions.down);
+          break;
+        default:
+          break;
+      }
+    },
+    changeDirection(direction) {
+      if((this.direction.name === 'left' && direction.name === 'right') || (direction.name === 'left' && this.direction.name === 'right')) return
+      if((this.direction.name === 'up' && direction.name === 'down') || (direction.name === 'up' && this.direction.name === 'down')) return
+      this.direction = direction
+    },
+    move() {
+      let op = clone(this.positions[this.positions.length - 1])
+      let np = [op[0] + this.direction.position[0], op[1] + this.direction.position[1]]
+      if(np[0] === this.foodPosition[0] && np[1] === this.foodPosition[1]) {
+        this.positions.push(this.foodPosition)
+        this.generateFood()
+      }
+      this.positions.push(np)
+      this.positions.splice(0,1)
+    },
+    generateFood() {
+      const x = random(this.container.width)
+      const y = random(this.container.height)
+      this.foodPosition = [x,y]
+    },
+    verifyCrash() {
+      const head = this.positions[this.positions.length - 1]
+      if(head[0] < 0 || head[0] > this.container.width || head[1] < 0 || head[1] > this.container.height) {
+        return true
+      }
+      for(let i = 0; i < this.positions.length - 2; i += 1) {
+        const body = this.positions[i]
+        if(body[0] === head[0] && body[1] === head[1]) {
+          return true
+        }
+      }
+      return false
+    },
+    start() {
+      this.generateFood()
+      if(this.gameTimer) clearInterval(this.gameTimer)
+      this.gameTimer = setInterval(() => {
+        this.move()
+        const crashed = this.verifyCrash()
+        if(crashed) {
+          this.end()
+          console.log('you lose')
+        }
+      }, this.frequency)
+      if(this.timer) clearInterval(this.timer)
+      this.timer = setInterval(() => {
+        this.time += 1
+      }, 1000)
+    },
+    end() {
+      if(this.gameTimer) clearInterval(this.gameTimer)
+      if(this.timer) clearInterval(this.timer)
+      this.positions = [[2,2]]
+      this.direction = directions.right
+      this.foodPosition = null
+      this.timer = null
+      this.time = 0
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+$size: 20px;
+$width: 30;
+$height: 30;
+.container {
+  position: relative;
+  height: calc(#{$size} * #{$height});
+  width: calc(#{$size} * #{$width});
+  background: black;
+}
+</style>
