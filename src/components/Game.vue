@@ -1,25 +1,22 @@
 <template>
-  <div>
-    <div style="width: 200px;">
-      <button 
-        @click="start">
-        start
-      </button>
-      <button 
-        @click="end">
-        end
-      </button>
-      <div>
-        {{`frequency: ${frequency}`}}
+  <div class="page-container">
+    <div class="setting-container">
+      <div class="text">
+        {{`speed: ${100/frequency}`}}
       </div>
-      <div>
+      <div class="text">
         {{`time: ${time}`}}
       </div>
-      <div>
+      <div class="text">
         {{`score: ${positions.length - 1}`}}
       </div>
+      <button 
+        class="button"
+        @click="start">
+        START
+      </button>
     </div>
-    <div class="container">
+    <div class="game-container">
       <snake
         :positions="positions"/>
       <food
@@ -35,6 +32,7 @@ function clone(obj) {
 function random(num) {
   return Math.floor(Math.random() * Math.floor(num))
 }
+const initialPositions = [[2,2], [3,2], [4,2]]
 const directions = {
   left: {
     name: 'left',
@@ -63,7 +61,7 @@ export default {
       gameTimer: null,
       timer: null,
       time: 0,
-      positions: [[2,2], [3,2], [4,2]],
+      positions: initialPositions,
       direction: directions.right,
       foodPosition: null,
       container: {
@@ -75,14 +73,16 @@ export default {
   },
   mounted() {
     window.addEventListener("keydown", e => {
-      if(this.time > 0) {
-        this.keyPress(e.keyCode)
-      }
+      this.keyPress(e.keyCode)
     });
   },
   methods: {
     keyPress(code) {
       switch(code) {
+        case 13:
+          this.end();
+          this.start();
+          break;
         case 37:  // left
           this.changeDirection(directions.left);
           break;
@@ -133,7 +133,7 @@ export default {
       return false
     },
     start() {
-      this.generateFood()
+      this.generateFood();
       if(this.gameTimer) clearInterval(this.gameTimer)
       this.gameTimer = setInterval(() => {
         this.move()
@@ -151,7 +151,7 @@ export default {
     end() {
       if(this.gameTimer) clearInterval(this.gameTimer)
       if(this.timer) clearInterval(this.timer)
-      this.positions = [[2,2]]
+      this.positions = initialPositions
       this.direction = directions.right
       this.foodPosition = null
       this.timer = null
@@ -165,10 +165,32 @@ export default {
 $size: 20px;
 $width: 30;
 $height: 30;
-.container {
-  position: relative;
-  height: calc(#{$size} * #{$height});
-  width: calc(#{$size} * #{$width});
-  background: black;
+.page-container {
+  width: 100%;
+  height: 100%;
+  .setting-container {
+    margin: auto;
+    padding: 40px 0px;
+    .text {
+      margin: 10px 0px;
+    }
+    .button {
+      margin: 10px 0px;
+      height: 40px;
+      width: 200px;
+      background: white;
+      border-radius: 5px;
+      border-width: 2px;
+      border-style: solid;
+      border-color: black;
+    }
+  }
+  .game-container {
+    margin: auto;
+    position: relative;
+    height: calc(#{$size} * #{$height});
+    width: calc(#{$size} * #{$width});
+    background: black;
+  }
 }
 </style>

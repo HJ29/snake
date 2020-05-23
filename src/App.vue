@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" style="height: 100%; width: 100vw;">
     <game></game>
   </div>
 </template>
