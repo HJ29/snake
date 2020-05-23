@@ -11,7 +11,7 @@
             size="sm"/>
         </div>
         <div class="text">
-          {{`SPEED: ${(1000/frequency).toFixed(2)}`}}
+          {{`SPEED: ${speed.level}`}}
         </div>
         <div>
           <q-btn 
@@ -26,7 +26,7 @@
         {{`TIME: ${time}`}}
       </div>
       <div class="text">
-        {{`SCORE: ${positions.length - 1}`}}
+        {{`SCORE: ${positions.length - 3}`}}
       </div>
       <div 
         class="button cursor-pointer row items-center justify-center"
@@ -52,7 +52,39 @@ function clone(obj) {
 function random(num) {
   return Math.floor(Math.random() * Math.floor(num))
 }
-const initialPositions = [[2,2], [3,2], [4,2]]
+function getInitialPositions() {
+  return [[2,2], [3,2], [4,2]]
+}
+let speeds = [
+  {
+    level: 1,
+    frequency: 600
+  },
+  {
+    level: 2,
+    frequency: 500
+  },
+  {
+    level: 3,
+    frequency: 400
+  },
+  {
+    level: 4,
+    frequency: 300
+  },
+  {
+    level: 5,
+    frequency: 200
+  },
+  {
+    level: 6,
+    frequency: 100
+  },
+  {
+    level: 7,
+    frequency: 50
+  },
+]
 const directions = {
   left: {
     name: 'left',
@@ -81,14 +113,15 @@ export default {
       gameTimer: null,
       timer: null,
       time: 0,
-      positions: initialPositions,
+      positions: getInitialPositions(),
       direction: directions.right,
       foodPosition: null,
       container: {
         width: 30,
         height: 30,
       },
-      frequency: 200,
+      speeds: speeds,
+      speed: speeds[0],
     }
   },
   mounted() {
@@ -99,6 +132,12 @@ export default {
   methods: {
     keyPress(code) {
       switch(code) {
+        case 97:
+          this.changeSpeed(1)
+          break;
+        case 98:
+          this.changeSpeed(-1)
+          break
         case 13:
           this.end();
           this.start();
@@ -118,6 +157,13 @@ export default {
         default:
           break;
       }
+    },
+    changeSpeed(num) {
+      const speed = this.speeds.find(speed => speed.level === this.speed.level + num )
+      if(speed) {
+        this.speed = speed
+      }
+      this.runGame()
     },
     changeDirection(direction) {
       if((this.direction.name === 'left' && direction.name === 'right') || (direction.name === 'left' && this.direction.name === 'right')) return
@@ -152,8 +198,13 @@ export default {
       }
       return false
     },
-    start() {
-      this.generateFood();
+    runTimer() {
+      if(this.timer) clearInterval(this.timer)
+      this.timer = setInterval(() => {
+        this.time += 1
+      }, 1000)
+    },
+    runGame() {
       if(this.gameTimer) clearInterval(this.gameTimer)
       this.gameTimer = setInterval(() => {
         this.move()
@@ -162,16 +213,17 @@ export default {
           this.end()
           console.log('you lose')
         }
-      }, this.frequency)
-      if(this.timer) clearInterval(this.timer)
-      this.timer = setInterval(() => {
-        this.time += 1
-      }, 1000)
+      }, this.speed.frequency)
+    },
+    start() {
+      this.runTimer()
+      this.generateFood();
+      this.runGame()
     },
     end() {
       if(this.gameTimer) clearInterval(this.gameTimer)
       if(this.timer) clearInterval(this.timer)
-      this.positions = initialPositions
+      this.positions = getInitialPositions()
       this.direction = directions.right
       this.foodPosition = null
       this.timer = null
