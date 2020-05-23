@@ -1,26 +1,46 @@
 <template>
-  <div class="page-container">
-    <div class="setting-container">
-      <div class="text">
-        {{`speed: ${100/frequency}`}}
+  <div class="page-container column">
+    <div class="setting-container col column items-center justify-center">
+      <div class="row items-center">
+        <div>
+          <q-btn 
+            flat
+            icon="expand_less"
+            round
+            @click="changeSpeed(1)"
+            size="sm"/>
+        </div>
+        <div class="text">
+          {{`SPEED: ${(1000/frequency).toFixed(2)}`}}
+        </div>
+        <div>
+          <q-btn 
+            flat
+            icon="expand_more"
+            round
+            @click="changeSpeed(-1)"
+            size="sm"/>
+        </div>
       </div>
       <div class="text">
-        {{`time: ${time}`}}
+        {{`TIME: ${time}`}}
       </div>
       <div class="text">
-        {{`score: ${positions.length - 1}`}}
+        {{`SCORE: ${positions.length - 1}`}}
       </div>
-      <button 
-        class="button"
+      <div 
+        class="button cursor-pointer row items-center justify-center"
         @click="start">
         START
-      </button>
+      </div>
     </div>
-    <div class="game-container">
-      <snake
-        :positions="positions"/>
-      <food
-        :position="foodPosition"/>
+    <div class="row items-center justify-center">
+      <div class="game-container">
+        <snake
+          :positions="positions"/>
+        <food
+          :position="foodPosition"/>
+      </div>
     </div>
   </div>
 </template>
@@ -169,10 +189,9 @@ $height: 30;
   width: 100%;
   height: 100%;
   .setting-container {
-    margin: auto;
     padding: 40px 0px;
     .text {
-      margin: 10px 0px;
+      padding: 10px 0px;
     }
     .button {
       margin: 10px 0px;
@@ -186,7 +205,6 @@ $height: 30;
     }
   }
   .game-container {
-    margin: auto;
     position: relative;
     height: calc(#{$size} * #{$height});
     width: calc(#{$size} * #{$width});

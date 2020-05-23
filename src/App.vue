@@ -1,25 +1,27 @@
 <template>
-  <div id="app" style="height: 100%; width: 100vw;">
-    <game></game>
-  </div>
+  <q-layout view="lHh Lpr lFf">
+    <q-page-container>
+      <game />
+    </q-page-container>
+  </q-layout>
 </template>
 
 <script>
 
 export default {
-  name: 'App',
+  name: 'LayoutDefault',
+
   components: {
     Game: () => import('./components/Game.vue')
+  },
+
+  data () {
+    return {
+      leftDrawerOpen: false
+    }
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
 </style>
