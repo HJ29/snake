@@ -121,7 +121,7 @@ export default {
         height: 30,
       },
       speeds: speeds,
-      speed: speeds[0],
+      speed: speeds[3],
     }
   },
   mounted() {
