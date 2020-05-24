@@ -131,13 +131,21 @@ export default {
     }
   },
   mounted() {
-    window.addEventListener("keydown", e => {
-      this.keyPress(e.keyCode)
-    });
+    this.setKeydownListener(true)
+  },
+  beforeDestroy() {
+    this.setKeydownListener(false)
   },
   methods: {
-    keyPress(code) {
-      switch(code) {
+    setKeydownListener(ok) {
+      if(ok) {
+        window.addEventListener("keydown", this.keyPress);
+      } else {
+        window.removeEventListener("keydown", this.keyPress)
+      }
+    },
+    keyPress(e) {
+      switch(e.keyCode) {
         case 97:
           this.changeSpeed(1)
           break;
@@ -219,6 +227,7 @@ export default {
         this.move()
         const crashed = this.verifyCrash()
         if(crashed) {
+          this.setKeydownListener(false)
           const score = this.score
           const time = this.time
           this.end()
@@ -228,6 +237,8 @@ export default {
             time
           }).onOk(() => {
             this.start()
+          }).onDismiss(() => {
+            this.setKeydownListener(true)
           })
         }
       }, this.speed.frequency)
