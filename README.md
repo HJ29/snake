@@ -1,5 +1,8 @@
 # snake
 
+### Demo
+[Demo](https://hj29.github.io/snake/).
+
 ## Project setup
 ```
 yarn install
