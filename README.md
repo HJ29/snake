@@ -1,8 +1,5 @@
 # snake
 
-### Demo
-[Demo](https://hj29.github.io/snake/).
-
 ## Project setup
 ```
 yarn install
@@ -22,6 +19,9 @@ yarn build
 ```
 yarn lint
 ```
+
+### Demo
+[Demo](https://hj29.github.io/snake/)
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
