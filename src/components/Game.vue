@@ -26,7 +26,7 @@
         {{`TIME: ${time}`}}
       </div>
       <div class="text">
-        {{`SCORE: ${positions.length - 3}`}}
+        {{`SCORE: ${score}`}}
       </div>
       <div 
         class="button cursor-pointer row items-center justify-center"
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import ScoreDialog from './ScoreDialog.vue'
 function clone(obj) {
   return JSON.parse(JSON.stringify(obj))
 }
@@ -124,6 +125,11 @@ export default {
       speed: speeds[3],
     }
   },
+  computed: {
+    score() {
+      return this.positions.length - 3
+    }
+  },
   mounted() {
     window.addEventListener("keydown", e => {
       this.keyPress(e.keyCode)
@@ -190,7 +196,7 @@ export default {
     },
     verifyCrash() {
       const head = this.positions[this.positions.length - 1]
-      if(head[0] < 0 || head[0] > this.container.width || head[1] < 0 || head[1] > this.container.height) {
+      if(head[0] < 0 || head[0] >= this.container.width || head[1] < 0 || head[1] >= this.container.height) {
         return true
       }
       for(let i = 0; i < this.positions.length - 2; i += 1) {
@@ -213,8 +219,16 @@ export default {
         this.move()
         const crashed = this.verifyCrash()
         if(crashed) {
+          const score = this.score
+          const time = this.time
           this.end()
-          console.log('you lose')
+          this.$q.dialog({
+            component: ScoreDialog,
+            score,
+            time
+          }).onOk(() => {
+            this.start()
+          })
         }
       }, this.speed.frequency)
     },
