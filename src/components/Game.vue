@@ -29,7 +29,7 @@
         {{`SCORE: ${score}`}}
       </div>
       <div 
-        class="button cursor-pointer row items-center justify-center"
+        class="btn cursor-pointer"
         @click="start">
         START
       </div>
@@ -278,17 +278,17 @@ $height: 30;
   .setting-container {
     padding: 40px 0px;
     .text {
-      padding: 10px 0px;
+      padding: 5px 0px;
     }
-    .button {
-      margin: 10px 0px;
-      height: 40px;
-      width: 200px;
-      background: white;
-      border-radius: 5px;
-      border-width: 2px;
+    .btn {
       border-style: solid;
+      border-width: 2px;
+      border-radius: 5px;
       border-color: black;
+      padding: 5px 20px;
+      width: 150px;
+      text-align: center;
+      margin: 5px;
     }
   }
   .game-container {
