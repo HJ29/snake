@@ -183,7 +183,10 @@ export default {
     generateFood() {
       const x = random(this.container.width)
       const y = random(this.container.height)
-      this.foodPosition = [x,y]
+      const exist = this.positions.find(position => position.x === x && position.y === y)
+      if(!exist) {
+        this.foodPosition = [x,y]
+      }
     },
     verifyCrash() {
       const head = this.positions[this.positions.length - 1]
@@ -233,10 +236,17 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 $size: 20px;
 $width: 30;
 $height: 30;
+.pixel {
+  position: absolute;
+  background: white;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+}
 .page-container {
   width: 100%;
   height: 100%;

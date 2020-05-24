@@ -15,10 +15,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.pixel {
-  position: absolute;
-  background: white;
-}
-</style>
